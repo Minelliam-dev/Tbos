@@ -133,7 +133,7 @@ while True:
         print("")
 
     elif inp == "test":
-        print("everyting seems to be working!")
+        test_all.main()
 
     elif inp == "clear":
         screensaver.clear()
