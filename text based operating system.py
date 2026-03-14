@@ -11,8 +11,7 @@ image,
 screensaver, 
 text_editor
 )
-
-
+from apps.screensaver import clear
 
 ANSI_GREEN = "\033[32m"
 ANSI_DIM = "\033[2m"
@@ -34,10 +33,13 @@ computer_ASCII = """
 def startup():
     print("starting tbos.")
     time.sleep(random.randint(0, 3))
+    clear()
     print("starting tbos..")
     time.sleep(random.randint(0, 3))
+    clear()
     print("starting tbos...")
     time.sleep(random.randint(0, 3))
+    clear()
     test_all.main()
 
 startup()
@@ -46,25 +48,33 @@ print(computer_ASCII)
 
 apps = []
 
+if not data.getFileExists("save_data/installed_apps.txt"):
+    data.create("save_data/installed_apps", ".txt")
+else:
+    apps = data.readLine("save_data/installed_apps.txt", 1)
+
+
+def install_app(app_id, install_text):
+    global apps
+    if str(app_id) in apps:
+        print("app already installed")
+        return
+    apps += str(app_id)
+    if install_text != "":
+        print(install_text)
+
 while True:
     inp = input("tbos> ")
 
     if inp == "exit":
+        data.write("save_data/installed_apps.txt", str(apps))
         break
 
-    elif inp == "apps":
-        print("installed apps:")
-        
-        if "1" in apps:
-            print("snake")
-        if "2" in apps:
-            print("tetris")
-
     elif inp == "install snake":
-        apps += "1"
+        install_app(1, "installed snake")
 
     elif inp == "install tetris":
-        apps += "2"
+        install_app(2, "installed tetris")
 
     elif inp == "run snake":
         if "1" in apps:
@@ -88,23 +98,19 @@ while True:
         print("run [app]")
         print("exit")
         print("screensaver")
-        print("")
+        print("file write")
 
-    elif inp == "file":
+    elif inp == "file write":
         text_editor.main()
 
     elif inp == "install img":
-        print("""
+        install_app(3, """        
+installed image --> terminal extension!
+new commands: 
         
-        installed image --> terminal extension!
-
-        new commands: 
-        
-        display: opens display submenu
-        [path]: loads .png files when in the display submenu
-              
-        """)
-        apps += "3"
+display: opens display submenu
+[path]: loads .png files when in the display submenu
+      """)
 
     elif inp == "install all":
         apps += "1"
@@ -136,7 +142,7 @@ while True:
         test_all.main()
 
     elif inp == "clear":
-        screensaver.clear()
+        clear()
 
     elif inp == "screensaver":
         screensaver.matrix_screensaver(30, 0.035)
